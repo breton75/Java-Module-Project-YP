@@ -31,14 +31,15 @@ public class Main {
 
             try {
 
-                personCount = scanner.nextInt();
+                personCount = Integer.parseInt(scanner.nextLine());
 
                 if (personCount < 2)
                     System.out.println(INCORRECT_INPUT_MSG);
 
-            } catch (InputMismatchException e) {
+            } catch (NumberFormatException e) {
 
                 System.out.println(INCORRECT_INPUT_MSG);
+                scanner.reset();
             }
         }
 
@@ -50,37 +51,43 @@ public class Main {
 
             System.out.println("Введите имя товара");
 
-            String name = scanner.next();
+            String name = scanner.nextLine();
             float price;
 
             if(name.equalsIgnoreCase("завершить") || name.equals("e"))
                 break;
 
+            while(true) {
 
-            try {
-                System.out.println(" ... и его стоимость в формате [рубли.копейки]");
-                price = Float.parseFloat(scanner.next());
+                try {
+                    System.out.println("Укажите стоимость товара в формате [рубли.копейки]");
 
-                if (price <= 0.0f) {
+                    price = Float.parseFloat(scanner.nextLine());
 
+                    if (price <= 0.0f) {
+
+                        System.out.println(INCORRECT_INPUT_MSG);
+                        continue;
+                    }
+
+                    break;
+
+                } catch (NumberFormatException e) {
                     System.out.println(INCORRECT_INPUT_MSG);
-                    continue;
                 }
-
-                // добавляем товар
-                commodArray.add(new Commodity(name, price));
-
-            } catch (NumberFormatException e) {
-
-                System.out.println(INCORRECT_INPUT_MSG);
             }
+
+            // добавляем товар
+            commodArray.add(new Commodity(name, price));
+
         }
 
         commodArray.print();
 
-        System.out.printf("Общая стоимость товаров: %.2f %s\nС каждого человека по %.2f %s\n",
+        System.out.printf("Общая стоимость товаров: %.2f %s. Количество человек: %d\nС каждого человека по %.2f %s\n",
                 commodArray.sum,
                 Formatter.format(commodArray.sum),
+                personCount,
                 (float)(commodArray.sum / personCount),
                 Formatter.format(commodArray.sum / personCount));
 
